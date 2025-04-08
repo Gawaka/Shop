@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Shop</title>
+</head>
+
+<body>
+    <header>
+        <h1>Магазин</h1>
+    <form class="search_form" action="">
+        <select>
+            <option value="усі">усі категорії</option>
+        </select>
+        <input id="search_inp"  type="text" placeholder="Пошук товарів..." />
+        <button id="search_btn">Пошук</button>
+    </form>
+    <form class="sort_form" action="">
+        <label for="inp1">
+            В наявності
+            <input id="inp1" type="checkbox" />
+        </label>
+        <label for="inp2">
+            Немає в наявності
+            <input id="inp2" type="checkbox" />
+        </label>
+    </form>
+    </header>
+
+    <b>Кошик: <span class="cart">0</span></b>
+    <button>Відкрити кошик</button>
+
+    <div class="out">
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
