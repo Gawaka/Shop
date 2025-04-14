@@ -28,12 +28,26 @@
         </label>
     </form>
     </header>
-
-    <b>Кошик: <span class="cart">0</span></b>
-    <button>Відкрити кошик</button>
-
-    <div class="out">
-    </div>
+    <main>
+        <b>Кошик: <span class="cart">0</span></b>
+        <button class="cart__btn">Відкрити кошик</button>
+        <div class="modal">
+            <h3>Кошик</h3>
+            <button class="close-btn">&times;</button>
+            <div class="cart_btns">
+                <button id="apply">Оформити замовлення</button>
+                <button id="clear">Очистити кошик</button>
+            </div>
+            <div style="padding-top: 10px;" class="modal_out"></div>
+        </div>
+        <div class="out">
+        </div>
+        <div class="thanks_modal_wrap hidden">
+            <div class="thanks_modal hidden">
+                <p>Дякуємо за замовлення!</p>
+            </div>
+        </div>
+    </main>
 
     <script src="./script.js"></script>
 </body>

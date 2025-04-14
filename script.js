@@ -1,4 +1,5 @@
-
+window.addEventListener('DOMContentLoaded', ()=> {
+    
     const products = [
         {
             id: 1,
@@ -93,12 +94,17 @@
     const out = document.querySelector('.out');
     const cartOut = document.querySelector('.cart');
     const selectCategory = document.querySelector('select');
-    const inpInStock = document.querySelector('#inp1');
-    const sortButton = document.querySelector('.sort');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const searchInp = document.querySelector('#search_inp');
-    const searchBtn = document.querySelector('#search_btn');
-    const cartArr = [];
+    const cartBtn = document.querySelector('.cart__btn');
+    const closeCart = document.querySelector('.close-btn');
+    const cartModal = document.querySelector('.modal');
+    const modalOut = document.querySelector('.modal_out');
+    const clearCart = document.querySelector('#clear');
+    const orderApply = document.querySelector('#apply');
+    const thanksModalWrap = document.querySelector('.thanks_modal_wrap');
+    const thanksModal = document.querySelector('.thanks_modal');
+    let cartArr = [];
 
     searchInp.addEventListener('keyup', ()=> {
         out.innerHTML = '';
@@ -110,7 +116,6 @@
         });
     });
 
-                                        // // як це працює
     checkboxes.forEach(checkbox=> {
         checkbox.addEventListener('change', ()=> {
             if (checkbox.checked) {
@@ -119,10 +124,8 @@
                         checkboxOther.checked = false;
                     }
                 });
-
                 const showInStock = checkbox.id === 'inp1';
                 const filtered = products.filter(item=> item.inStock === showInStock);
-
                 out.innerHTML = '';
                 filtered.forEach(item=> out.append(createCard(item)));
             } else {
@@ -213,6 +216,8 @@
         addToCart.onclick = ()=> {
             cartArr.push(product);
             cartOut.innerHTML = cartArr.length;
+            updateCart();
+            localStorage.setItem('currentItems', JSON.stringify(cartArr.length))
         }
         
         priceItem.append(price, currency);
@@ -221,8 +226,102 @@
         divItem.append(categoryItem, imgItem, infoContainer);
     
         return divItem;
-    }
+    };
+
+    // // кількість товарів в кошику
+    const savedCartLength = JSON.parse(localStorage.getItem('currentItems')) || 0;
+    cartOut.innerHTML = savedCartLength;
+
+    function createCartItem(product) {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('modal_items');
+
+        const cartItemImg = document.createElement('img');
+        cartItemImg.classList.add('item_cart_img');
+        cartItemImg.src = product.img;
+        cartItemImg.alt = product.name;
+
+        const cartItemTitle = document.createElement('h3');
+        cartItemTitle.classList.add('item_cart_title');
+        cartItemTitle.innerHTML = product.name;
+
+        const cartItemPrice = document.createElement('span');
+        cartItemPrice.classList.add('item_cart_price');
+        cartItemPrice.innerHTML = `${product.price} UAH`;
+
+        const removeItem = document.createElement('button');
+        removeItem.classList.add('remove_item');
+        removeItem.innerHTML = '&times;';
+
+        cartItem.append(cartItemImg, cartItemTitle, cartItemPrice, removeItem);
+
+        removeItem.onclick = ()=> {
+            cartItem.remove();
+        }
+
+        return cartItem
+    };
+
+    function updateCart() {
+        modalOut.innerHTML = '';
+        cartArr.forEach(item=> {
+            modalOut.append(createCartItem(item));
+        });
+
+        localStorage.setItem('product', JSON.stringify(cartArr));
+    };
     
     products.forEach(item=> out.append(createCard(item)));
 
     console.log(products);
+
+    function toggleCart() {
+        cartModal.classList.toggle('open');
+    }
+
+    cartBtn.addEventListener('click', ()=> {
+        toggleCart();
+    });
+
+    closeCart.addEventListener('click', ()=> {
+        toggleCart();
+    });
+
+    function clearStorage () {
+        localStorage.clear();
+        modalOut.innerHTML = '';
+        cartOut.innerHTML = '0';
+        cartArr = [];
+    }
+
+    clearCart.addEventListener('click', ()=> {
+        clearStorage();
+    });
+
+    const savedCart = localStorage.getItem('product');
+    const savedCurrent = localStorage.getItem('currentItems');
+
+    if (savedCart) {
+        cartArr = JSON.parse(savedCart);
+        updateCart();
+    }
+
+    if (savedCurrent) {
+        cartCurrentArr = JSON.parse(savedCurrent);
+    }
+
+    orderApply.addEventListener('click', () => {
+        if (cartArr.length > 0) {
+            clearStorage();
+            toggleCart();
+            thanksModalWrap.classList.add('active');
+            thanksModal.classList.add('active');
+    
+            setTimeout(() => {
+                thanksModalWrap.classList.remove('active');
+                thanksModal.classList.remove('active');
+            }, 2000);
+        }
+    });
+
+});
