@@ -1,96 +1,4 @@
 window.addEventListener('DOMContentLoaded', ()=> {
-    
-    const products = [
-        {
-            id: 1,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/s/m/sm-a366_galaxy_a36_5g_awesome_black_front.jpg/f_auto",
-            name: "Смартфон Samsung Galaxy A54",
-            price: 12999,
-            category: "Електроніка",
-            inStock: true
-        },
-        {
-            id: 2,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/l/e/lenovo_ideapad_3_15iau7_82rk012lra_arctic_grey_1__1_1.jpg/f_auto",
-            name: "Ноутбук Lenovo IdeaPad 3",
-            price: 20999,
-            category: "Електроніка",
-            inStock: false
-        },
-        {
-            id: 3,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/i/m/img_2742.jpg/f_auto",
-            name: "Навушники JBL Tune 510BT",
-            price: 1499,
-            category: "Аудіо",
-            inStock: true
-        },
-        {
-            id: 4,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/2/2/22467564_wgb24400ua_stp_def.jpg/f_auto",
-            name: "Пральна машина Bosch",
-            price: 48999,
-            category: "Побутова техніка",
-            inStock: false
-        },
-        {
-            id: 5,
-            img: "https://book-ye.com.ua/upload/resize_cache/iblock/08e/520_860_1/a39bd911_8189_11e6_80c0_000c29ae1566_95abe429_2b66_11e7_80c5_000c29ae1566.jpg",
-            name: "Книга 'Відьмак: Хрещення вогнем'",
-            price: 399,
-            category: "Книги",
-            inStock: true
-        },
-        {
-            id: 6,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/l/e/lenovo_ideapad_3_15iau7_82rk012lra_arctic_grey_1__1_1.jpg/f_auto",
-            name: "Ноутбук Lenovo IdeaPad 3",
-            price: 20999,
-            category: "Електроніка",
-            inStock: false
-        },
-        {
-            id: 7,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/s/m/sm-a366_galaxy_a36_5g_awesome_black_front.jpg/f_auto",
-            name: "Смартфон Samsung Galaxy A54",
-            price: 12999,
-            category: "Електроніка",
-            inStock: true
-        },
-        {
-            id: 8,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/2/2/22467564_wgb24400ua_stp_def.jpg/f_auto",
-            name: "Пральна машина Bosch",
-            price: 48999,
-            category: "Побутова техніка",
-            inStock: true
-        },
-        {
-            id: 9,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/i/m/img_2742.jpg/f_auto",
-            name: "Навушники JBL Tune 510BT",
-            price: 1499,
-            category: "Аудіо",
-            inStock: true
-        },
-        {
-            id: 10,
-            img: "https://book-ye.com.ua/upload/resize_cache/iblock/08e/520_860_1/a39bd911_8189_11e6_80c0_000c29ae1566_95abe429_2b66_11e7_80c5_000c29ae1566.jpg",
-            name: "Книга 'Відьмак: Хрещення вогнем'",
-            price: 399,
-            category: "Книги",
-            inStock: false
-        },
-        {
-            id: 11,
-            img: "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/t/i/titanium_chef_baker_kvc85_594si_main.jpg/f_auto",
-            name: "Кухонна машина Kenwood",
-            price: 30999,
-            category: "Техніка для кухні",
-            inStock: false
-        },
-];
-
     const out = document.querySelector('.out');
     const cartOut = document.querySelector('.cart');
     const selectCategory = document.querySelector('select');
@@ -105,6 +13,41 @@ window.addEventListener('DOMContentLoaded', ()=> {
     const thanksModalWrap = document.querySelector('.thanks_modal_wrap');
     const thanksModal = document.querySelector('.thanks_modal');
     let cartArr = [];
+
+    let products = [];
+
+    fetch('https://fakestoreapi.com/products')
+        .then(response => response.json())
+        .then(data => {
+            products = data.map(item=> ({
+                id: item.id,
+                img: item.image,
+                name: item.title,
+                price: item.price,
+                category: item.category,
+                inStock: Math.random() > 0.5
+            }));
+            console.log(products);
+            createCategories();
+            renderProducts(products);
+        });
+
+    
+    function createCategories() {
+        const categories = ['усі', ...new Set(products.map(item => item.category))];
+        selectCategory.innerHTML = '';
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.innerHTML = category;
+            selectCategory.append(option);
+        });
+    };
+
+    function renderProducts(arr) {
+        out.innerHTML = '';
+        arr.forEach(product => out.append(createCard(product)));
+    };
 
     searchInp.addEventListener('keyup', ()=> {
         out.innerHTML = '';
@@ -135,21 +78,6 @@ window.addEventListener('DOMContentLoaded', ()=> {
         });
     });
 
-    // checkboxes.forEach(item=> {
-    //     // item.addEventListener('change', ()=> {
-    //     //     if (inpInStock.checked) {
-    //     //         inpOutOfStock.checked = false;
-    //     //         const filteredProducts = products.filter(item=> item.inStock === true);
-    //     //         out.innerHTML = '';
-    //     //         filteredProducts.forEach(item=> out.append(createCard(item)));
-    //     //     } else if (inpOutOfStock.checked) {
-    //     //         inpInStock.checked = false;
-    //     //         const filteredOutOfStock = products.filter(item=> item.inStock === false);
-    //     //         out.innerHTML = '';
-    //     //         filteredOutOfStock.forEach(item=> out.append(createCard(item)));
-    //     //     }
-    //     // });
-    // });
 
     const categories = [...new Set(products.map(item=> {
         return item.category;
@@ -162,15 +90,14 @@ window.addEventListener('DOMContentLoaded', ()=> {
         selectCategory.append(option);
     });
 
-    selectCategory.addEventListener('change', ()=> {
+    selectCategory.addEventListener('change', () => {
         const selected = selectCategory.value;
-        const filtered = products.filter(item=> item.category === selected);
-        out.innerHTML = '';
-        filtered.forEach(item=> out.append(createCard(item)));
-
         if (selected === 'усі') {
-            products.forEach(item=> out.append(createCard(item)));
-        };
+            renderProducts(products);
+        } else {
+            const filtered = products.filter(item => item.category === selected);
+            renderProducts(filtered);
+        }
     });
 
     function createCard(product) {
@@ -212,12 +139,19 @@ window.addEventListener('DOMContentLoaded', ()=> {
         buy.classList.add('buy');
         addToCart.innerHTML = 'До кошика';
         buy.innerHTML = 'Придбати';
-
+        if (!product.inStock) {
+            addToCart.style.background = 'gray';
+        }
+        
         addToCart.onclick = ()=> {
-            cartArr.push(product);
-            cartOut.innerHTML = cartArr.length;
-            updateCart();
-            localStorage.setItem('currentItems', JSON.stringify(cartArr.length))
+            if (!product.inStock) {
+                return
+            } else {
+                cartArr.push(product);
+                cartOut.innerHTML = cartArr.length;
+                updateCart();
+                localStorage.setItem('currentItems', JSON.stringify(cartArr.length))
+            }
         }
         
         priceItem.append(price, currency);
@@ -323,5 +257,5 @@ window.addEventListener('DOMContentLoaded', ()=> {
             }, 2000);
         }
     });
-
+    
 });
